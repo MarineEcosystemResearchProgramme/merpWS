@@ -1,0 +1,50 @@
+---
+title: "merpWS"
+output: github_document
+---
+  
+  <!-- README.md is generated from README.Rmd. Please edit that file -->
+  
+  ```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+##### Functions to access marine data via Web Services
+
+An increasing number of marine data portals are making web services
+available. These allow, alongside traditional downloads from the browser,
+to access data programmaticely directly from scripting softwares such as Rstudio.
+
+The main advantages are two-folds: 1) the data fetched by R scripts are always up to date,
+a feature particularly useful when using data portals that are constantly added to; 2) 
+fetching, formatting and cleaning steps can be done as part of a single seamless workflow.
+
+merpWS is a collection of R functions making use of available marine web services to retrieve
+data from the main marine data portals. 
+
+## Installation
+merpWS can be installed using the install_github function from the devtools package.  
+
+```{r, echo = TRUE, eval = FALSE}
+library(devtools)
+devtools::install_github(repo = "MarineEcosystemResearchProgramme/merpWS")
+library(merpWS)
+```
+
+## Usage
+Below is the list of available functions:  
++ explore_cefas_data 
+
++ get_cefas_dataset_fields 
+
++ get_cefas_datasets  
+
+Each function has a help file which can be accessed in R
+by typing ? followed by the name of the function.  
+
+## Development
+merpWS functions are being developed openly on github. 
