@@ -4,11 +4,18 @@
 \alias{plot_obis}
 \title{Function to extract and map obis records}
 \usage{
-plot_obis(scientificname, year = NULL, region = NULL, myzoom = 7,
-  lat_centre = NULL, lon_centre = NULL, gridded = F, myresolution = 0.5)
+plot_obis(scientificname, year = NULL, area.x = NULL, area.y = NULL,
+  myzoom = 7, lat_centre = NULL, lon_centre = NULL, gridded = F,
+  myresolution = 0.5)
 }
 \arguments{
-\item{region}{is a character string for a marine region as defined in marineregion.org}
+\item{area.x}{is a vector of longitudes for the area of interest.
+Alongside area.y it describes the shape of a polygon in which \code{plot_obis}
+looks for records. Coordinates must be provided following the shape of the area
+clockwise, see example. 
+If NULL the function returns all available records.}
+
+\item{area.y}{is a vector of latitudes for the area of interest}
 
 \item{myzoom}{is the zoom to be applied to plot the gridded data on ggmap map}
 
@@ -33,7 +40,11 @@ is available.
 }
 \examples{
 library(robis)
-records <- plot_obis("Asterias rubens", region = "United Kingdom Exclusive Economic Zone", myresolution = 0.5, myzoom = 5, gridded = T)
+#' library(wellknown)
+# extract records for area of interest. Provide coordinates for the contour of the area
+# going anticlockwise and repeating the initial coordinates at the end to "close" the polygon 
+records <- plot_obis("Asterias rubens", area.x = c(-10, -10, 10, 10, -10), area.y = c(40, 60, 60, 40, 40),
+myresolution = 0.5, myzoom = 5, gridded = T)
 # examine the data
 head(records$obis_data)
 # plot the data
