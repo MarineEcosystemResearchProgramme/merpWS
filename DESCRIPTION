@@ -1,9 +1,23 @@
 Package: merpWS
-Title: What the Package Does (one line, title case)
+Title: Wrappers for existing marine web services
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.3.0)
+Authors@R: person("Remi", "Vergnon", email = "remi.vergnon@free.fr",
+                  role = c("aut", "cre"))
+Description: The package contains user-friendly functions 
+    that make use of existing web services (API/SOAP) made 
+    available by some of the main online marine data holders. 
+    These functions allow fetching marine data and/or metadata from within R. 
+Depends:
+    R (>= 3.3.0)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports:
+    RCurl,
+    ggplot2,
+    ggmap,
+    RSQLite,
+    jsonlite,
+    robis,
+    wellknown
+RoxygenNote: 5.0.1
