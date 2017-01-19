@@ -40,7 +40,7 @@ is available.
 }
 \examples{
 library(robis)
-#' library(wellknown)
+library(wellknown)
 # extract records for area of interest. Provide coordinates for the contour of the area
 # going clockwise and repeating the initial coordinates at the end to "close" the polygon 
 records <- plot_obis("Asterias rubens", area.x = c(-10, -10, 10, 10, -10), area.y = c(40, 60, 60, 40, 40),
