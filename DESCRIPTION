@@ -18,6 +18,7 @@ Imports:
     ggmap,
     RSQLite,
     jsonlite,
+    leaflet,
     robis,
     wellknown
 RoxygenNote: 5.0.1
