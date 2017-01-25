@@ -5,8 +5,11 @@
 #' is available.  
 #' 
 #' @return \code{plot_obis} returns a data.frame containing the extracted obis data 
-#' and a map showing occurrences.  
+#' and a map showing occurrences. The region of interest can either be defined manually
+#' as a polygon or by providing a shapefile.   
 #' 
+#' @param shapefile is the shapefile of a region of interest, obtained
+#' using the function mr_shp in the package mregions.
 #' @param area.x is a vector of longitudes for the area of interest.
 #' Alongside area.y it describes the shape of a polygon in which \code{plot_obis}
 #' looks for records. Coordinates must be provided following the shape of the area
@@ -24,7 +27,9 @@
 #' @examples
 #' library(robis)
 #' library(wellknown)
-#' # extract records for area of interest. Provide coordinates for the contour of the area
+#' library(mregions)
+#' library(rgeos)
+#' # example 1: extract records for rectangular area. Provide coordinates for the contour of the area
 #' # going clockwise and repeating the initial coordinates at the end to "close" the polygon 
 #' records <- plot_obis("Asterias rubens", area.x = c(-10, -10, 10, 10, -10), area.y = c(40, 60, 60, 40, 40),
 #' myresolution = 0.5, myzoom = 5, gridded = T)
@@ -32,16 +37,33 @@
 #' head(records$obis_data)
 #' # plot the data
 #' records$myplot
+#' # example 2: extract records for an area of interest defined as a shapefile
+#' uk_eez <- mr_shp("MarineRegions:eez", maxFeatures = NULL, 
+#' filter = "United Kingdom Exclusive Economic Zone")
+#' # shapefiles can be so complex that the robis functions crash: simplify
+#' # the shapefile using rgeos::gSimplify
+#' uk_eez_simple <- SpatialPolygonsDataFrame(gSimplify(uk_eez, tol = 0.01, topologyPreserve = TRUE), 
+#' data = uk_eez@data)
+#' records <- plot_obis("Asterias rubens", shapefile = uk_eez_simple,
+#' myresolution = 0.5, myzoom = 5, gridded = T)
+#' # examine the data
+#' head(records$obis_data)
+#' # plot the data
+#' records$myplot
 
-plot_obis <- function(scientificname, year = NULL, area.x = NULL, area.y = NULL, myzoom = 7, lat_centre = NULL, lon_centre = NULL, 
+plot_obis <- function(scientificname, year = NULL, shapefile = NULL, area.x = NULL, area.y = NULL, myzoom = 7, lat_centre = NULL, lon_centre = NULL, 
                       gridded  = F, myresolution = 0.5){
   
-  list.coord <- vector("list", length = length(area.x))
-  for(i in 1:length(area.x)) list.coord[[i]] <- c(area.x[i], area.y[i])
-  if(!is.null(area.x)) {
+  if(is.null(area.x) & is.null(shapefile)) mydata <- occurrence(scientificname, year = year)
+  else if(is.null(area.x) & !is.null(shapefile)){
+    mydata <- occurrence(scientificname, year = year, geometry = mr_as_wkt(shapefile))
+  }
+  else if(!is.null(area.x) & is.null(shapefile)){
+    list.coord <- vector("list", length = length(area.x))
+    for(i in 1:length(area.x)) list.coord[[i]] <- c(area.x[i], area.y[i])
     mydata <- occurrence(scientificname, year = year, geometry = polygon(list.coord))
   }
-  if(is.null(area.x)) mydata <- occurrence(scientificname, year = year)
+  
   if(!gridded){
     if(is.null(lat_centre)){
       mymap <- get_map(location=c(mean(mydata$decimalLongitude),mean(mydata$decimalLatitude)),"satellite",zoom=myzoom,scale="auto")

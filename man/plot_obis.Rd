@@ -4,11 +4,14 @@
 \alias{plot_obis}
 \title{Function to extract and map obis records}
 \usage{
-plot_obis(scientificname, year = NULL, area.x = NULL, area.y = NULL,
-  myzoom = 7, lat_centre = NULL, lon_centre = NULL, gridded = F,
-  myresolution = 0.5)
+plot_obis(scientificname, year = NULL, shapefile = NULL, area.x = NULL,
+  area.y = NULL, myzoom = 7, lat_centre = NULL, lon_centre = NULL,
+  gridded = F, myresolution = 0.5)
 }
 \arguments{
+\item{shapefile}{is the shapefile of a region of interest, obtained
+using the function mr_shp in the package mregions.}
+
 \item{area.x}{is a vector of longitudes for the area of interest.
 Alongside area.y it describes the shape of a polygon in which \code{plot_obis}
 looks for records. Coordinates must be provided following the shape of the area
@@ -31,7 +34,8 @@ longitude of observations.}
 }
 \value{
 \code{plot_obis} returns a data.frame containing the extracted obis data 
-and a map showing occurrences.
+and a map showing occurrences. The region of interest can either be defined manually
+as a polygon or by providing a shapefile.
 }
 \description{
 This is a wrapper for the occurrence function in the robis package that extracts obis
@@ -41,9 +45,24 @@ is available.
 \examples{
 library(robis)
 library(wellknown)
-# extract records for area of interest. Provide coordinates for the contour of the area
+library(mregions)
+library(rgeos)
+# example 1: extract records for rectangular area. Provide coordinates for the contour of the area
 # going clockwise and repeating the initial coordinates at the end to "close" the polygon 
 records <- plot_obis("Asterias rubens", area.x = c(-10, -10, 10, 10, -10), area.y = c(40, 60, 60, 40, 40),
+myresolution = 0.5, myzoom = 5, gridded = T)
+# examine the data
+head(records$obis_data)
+# plot the data
+records$myplot
+# example 2: extract records for an area of interest defined as a shapefile
+uk_eez <- mr_shp("MarineRegions:eez", maxFeatures = NULL, 
+filter = "United Kingdom Exclusive Economic Zone")
+# shapefiles can be so complex that the robis functions crash: simplify
+# the shapefile using rgeos::gSimplify
+uk_eez_simple <- SpatialPolygonsDataFrame(gSimplify(uk_eez, tol = 0.01, topologyPreserve = TRUE), 
+data = uk_eez@data)
+records <- plot_obis("Asterias rubens", shapefile = uk_eez_simple,
 myresolution = 0.5, myzoom = 5, gridded = T)
 # examine the data
 head(records$obis_data)
