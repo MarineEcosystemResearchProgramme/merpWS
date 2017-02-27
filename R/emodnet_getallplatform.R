@@ -11,6 +11,8 @@ emodnet_getallplatform <- function(){
   myurl <- "http://www.emodnet-physics.eu/map/Service/WSEmodnet2.aspx?q=GetAllPlatforms&Format=text/xml"
   inter <- getURL(myurl)
   inter1 <- gsub(pattern = "utf-16", replacement = "utf-8", x = inter, fixed = TRUE)# use exact matching
+  # check for some illegal characters
+  if(grep(inter1, pattern = "&") == 1) inter1 <- gsub(inter1, pattern = "&", replacement = "&amp;")
   myxml <- xmlParse(inter1)# erroneous encoding!xmlParse always used the encoding provided by the document, which is wrong in this case. so we need to change
   xmltop = xmlRoot(myxml)
   size <- xmlSize(xmltop)
