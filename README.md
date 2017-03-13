@@ -25,14 +25,38 @@ library(merpWS)
 Usage
 -----
 
-Below is the list of available functions:
-+ explore\_cefas\_data
+Below are possible workflows making use of merpWS functions. These workflows exemplify how data from different data sources can be combined to create "added data value". Typically we combine an observed variable with one or several explanatory ones, thereby mimicking . Note that web services are in most cases recent additions to data portals and bugs on their end are common. We are working in collaboration with data holding institutes to help them improve their offer.
 
--   get\_cefas\_dataset\_fields
+### Cefas data
 
--   get\_cefas\_datasets
+CEFAS has recently made its API available. It allows exploring and downloading some the data described in its new Data Hub.
 
-Each function has a help file which can be accessed in R by typing ? followed by the name of the function.
+``` r
+# list all data files
+mydatasets <- get_cefas_datasets()
+
+# extract csv files (only downloadable format)
+mydownloads <- mydatasets$to_download
+mydata <- mydownloads[explore_cefas_data(mydownloads$Name, keyword = "SWT"), ]
+
+# get some temperature data
+temp_data <- download_cefas_data(recordset_id = mydata$Id[1])
+
+# extract date in year, month and day from "Time"
+library(magrittr)
+inter <- strsplit(as.character(temp_data$Time), split = " ") %>%
+  sapply(., function(x) x[[1]]) %>%
+  strsplit(., split = "/") 
+temp_data$day <- sapply(inter, function(x) x[[1]])
+temp_data$month <- sapply(inter, function(x) x[[2]])
+temp_data$year <- sapply(inter, function(x) x[[3]])
+
+# plot the data
+library(ggplot2)
+library(ggmap)
+mymap <- get_map(location = c(lon = -3, lat = 53.5), zoom = 5)
+ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data[1:50000,])
+```
 
 Development
 -----------
