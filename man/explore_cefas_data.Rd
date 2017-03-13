@@ -4,11 +4,11 @@
 \alias{explore_cefas_data}
 \title{Explore CEFAS data sources availabe from CEFAS API}
 \usage{
-explore_cefas_data(list_sources = list_data_sets$Name, keyword)
+explore_cefas_data(list_sources, keyword)
 }
 \value{
-a subset data.frame containing all data sources whose
-names match the provided keyword.
+the indices of the data set rows matching
+the provided keyword.
 }
 \description{
 The function returns all recordset names matching 
@@ -24,7 +24,7 @@ The inputed keyword is not case sensitive.
 }
 \examples{
 mydata <- get_cefas_datasets()
-explore_cefas_data(list_sources = mydata$list_data_sets$Name, keyword = "Plankton")
+mydata[explore_cefas_data(list_sources = mydata$list_data_sets$Name, keyword = "Plankton"), ]
 
 
 }
