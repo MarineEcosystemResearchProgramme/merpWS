@@ -10,14 +10,14 @@
 #' second argument keyword is a keyword provided by the user. 
 #' The inputed keyword is not case sensitive. 
 #'  
-#' @return a subset data.frame containing all data sources whose
-#' names match the provided keyword.
+#' @return the indices of the data set rows matching
+#' the provided keyword.
 #' 
 #' @examples
 #' mydata <- get_cefas_datasets()
-#' explore_cefas_data(list_sources = mydata$list_data_sets$Name, keyword = "Plankton")
+#' mydata[explore_cefas_data(list_sources = mydata$list_data_sets$Name, keyword = "Plankton"), ]
 #' 
 #' 
-explore_cefas_data <- function(list_sources = list_data_sets$Name, keyword){
-  list_sources[grep(list_sources, pattern = keyword, ignore.case = T)]
+explore_cefas_data <- function(list_sources, keyword){
+  grep(list_sources, pattern = keyword, ignore.case = T)
 }
