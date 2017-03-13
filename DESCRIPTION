@@ -20,5 +20,6 @@ Imports:
     jsonlite,
     leaflet,
     robis,
-    wellknown
+    wellknown,
+    SPARQL
 RoxygenNote: 5.0.1
