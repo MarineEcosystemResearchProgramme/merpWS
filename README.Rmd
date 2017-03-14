@@ -74,13 +74,12 @@ temp_data$month <- sapply(inter, function(x) x[[2]])
 temp_data$year <- sapply(inter, function(x) x[[3]])
 ```
 
-```{r, echo = FALSE, eval = TRUE, message = FALSE}
+```{r, echo = TRUE, eval = TRUE, message = FALSE}
 # plot the data
 library(ggplot2)
 library(ggmap)
 mymap <- get_map(location = c(lon = -2.5, lat = 53.5), zoom = 6)
-p <- ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
-p
+ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
 ```
 
 ```{r, echo = TRUE, eval = FALSE, message = FALSE}

@@ -52,6 +52,14 @@ temp_data$month <- sapply(inter, function(x) x[[2]])
 temp_data$year <- sapply(inter, function(x) x[[3]])
 ```
 
+``` r
+# plot the data
+library(ggplot2)
+library(ggmap)
+mymap <- get_map(location = c(lon = -2.5, lat = 53.5), zoom = 6)
+ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
+```
+
 ![](README-unnamed-chunk-5-1.png)
 
 ``` r
