@@ -74,7 +74,7 @@ temp_data$month <- sapply(inter, function(x) x[[2]])
 temp_data$year <- sapply(inter, function(x) x[[3]])
 ```
 
-```{r, fig.width=7, fig.height=6, echo = TRUE, eval = TRUE}
+```{r figure, fig.width=7, fig.height=6, echo = TRUE, eval = TRUE, message = FALSE}
 # plot the data
 library(ggplot2)
 library(ggmap)
@@ -82,7 +82,7 @@ mymap <- get_map(location = c(lon = -2.5, lat = 53.5), zoom = 6)
 ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
 ```
 
-```{r, echo = TRUE, eval = TRUE, cache = TRUE}
+```{r, echo = TRUE, eval = TRUE, cache = TRUE, message = FALSE}
 # get some biotic data from obis
 # for a coastal species
 library(robis)
