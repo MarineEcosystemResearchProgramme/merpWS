@@ -61,7 +61,7 @@ plot_obis <- function(scientificname, year = NULL, shapefile = NULL, area.x = NU
   else if(!is.null(area.x) & is.null(shapefile)){
     list.coord <- vector("list", length = length(area.x))
     for(i in 1:length(area.x)) list.coord[[i]] <- c(area.x[i], area.y[i])
-    mydata <- occurrence(scientificname, year = year, geometry = polygon(list.coord))
+    mydata <- occurrence(scientificname, year = year, geometry = wellknown::polygon(list.coord))
   }
   
   if(!gridded){
