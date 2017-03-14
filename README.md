@@ -39,7 +39,7 @@ mydatasets <- get_cefas_datasets()
 mydownloads <- mydatasets$to_download
 mydata <- mydownloads[explore_cefas_data(mydownloads$Name, keyword = "SWT"), ]
 
-# get some temperature data
+# get some coastal temperature data
 temp_data <- download_cefas_data(recordset_id = mydata$Id[1])
 
 # extract date in year, month and day from "Time"
@@ -50,12 +50,17 @@ inter <- strsplit(as.character(temp_data$Time), split = " ") %>%
 temp_data$day <- sapply(inter, function(x) x[[1]])
 temp_data$month <- sapply(inter, function(x) x[[2]])
 temp_data$year <- sapply(inter, function(x) x[[3]])
+```
 
-# plot the data
-library(ggplot2)
+![](README-unnamed-chunk-5-1.png)
+
+``` r
+# get some biotic data from obis
+# for a coastal species
+library(robis)
 library(ggmap)
-mymap <- get_map(location = c(lon = -3, lat = 53.5), zoom = 5)
-ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data[1:50000,])
+records_gibbula <- plot_obis(scientificname = "Gibbula umbilicalis", area.x = c(-8.267, -8.267, 4.483, 4.483, -8.267), area.y = c(49.90, 56.45, 56.45, 49.90, 49.90), myresolution = 0.5, myzoom = 5, gridded = T)
+records_osilinus <- plot_obis("Osilinus lineatus", area.x = c(-8.267, -8.267, 4.483, 4.483, -8.267), area.y = c(49.90, 56.45, 56.45, 49.90, 49.90), myresolution = 0.5, myzoom = 5, gridded = T)
 ```
 
 Development
