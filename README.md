@@ -56,7 +56,10 @@ temp_data$year <- sapply(inter, function(x) x[[3]])
 # plot the data
 library(ggplot2)
 library(ggmap)
+#> Google Maps API Terms of Service: http://developers.google.com/maps/terms.
+#> Please cite ggmap if you use it: see citation("ggmap") for details.
 mymap <- get_map(location = c(lon = -2.5, lat = 53.5), zoom = 6)
+#> Source : https://maps.googleapis.com/maps/api/staticmap?center=53.5,-2.5&zoom=6&size=640x640&scale=2&maptype=terrain&language=en-EN
 ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
 ```
 
@@ -68,7 +71,16 @@ ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
 library(robis)
 library(ggmap)
 records_gibbula <- plot_obis(scientificname = "Gibbula umbilicalis", area.x = c(-8.267, -8.267, 4.483, 4.483, -8.267), area.y = c(49.90, 56.45, 56.45, 49.90, 49.90), myresolution = 0.5, myzoom = 5, gridded = T)
+#> 
+Retrieved 2000 records of 2965 (67%)
+Retrieved 2965 records of 2965 (100%)
+#> Source : https://maps.googleapis.com/maps/api/staticmap?center=52.053067,-4.475351&zoom=5&size=640x640&scale=2&maptype=satellite&language=en-EN
+#> Warning: Ignoring unknown aesthetics: width, height
 records_osilinus <- plot_obis("Osilinus lineatus", area.x = c(-8.267, -8.267, 4.483, 4.483, -8.267), area.y = c(49.90, 56.45, 56.45, 49.90, 49.90), myresolution = 0.5, myzoom = 5, gridded = T)
+#> 
+Retrieved 1173 records of 1173 (100%)
+#> Source : https://maps.googleapis.com/maps/api/staticmap?center=51.387261,-4.434366&zoom=5&size=640x640&scale=2&maptype=satellite&language=en-EN
+#> Warning: Ignoring unknown aesthetics: width, height
 ```
 
 Development
