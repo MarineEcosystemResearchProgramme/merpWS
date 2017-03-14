@@ -74,7 +74,7 @@ temp_data$month <- sapply(inter, function(x) x[[2]])
 temp_data$year <- sapply(inter, function(x) x[[3]])
 ```
 
-```{r, echo = TRUE, eval = TRUE, message = FALSE}
+```{r, fig.width=7, fig.height=6, echo = TRUE, eval = TRUE, message = FALSE}
 # plot the data
 library(ggplot2)
 library(ggmap)
