@@ -100,13 +100,11 @@ balanoides <- balanoides[!is.na(balanoides$eventDate), ]
 stellatus_temp <- rep(NA, nrow(stellatus))
 for(i in 1:length(stellatus_temp)) {
   stellatus_temp[i] <- match_env(env_lon = temp_data$Long, env_lat = temp_data$Lat, env_time = list(year = temp_data$year, month =     temp_data$month), bio_lon = stellatus$decimalLongitude[i], bio_lat = stellatus$decimalLatitude[i], bio_time = list(year = stellatus$year[i], month = stellatus$month[i]), max_dist = 100000, env_variable = temp_data$tC)
-  print(stellatus_temp[i])
 }
 
 balanoides_temp <- rep(NA, nrow(balanoides))
 for(i in 1:length(balanoides_temp)) {
   balanoides_temp[i] <- match_env(env_lon = temp_data$Long, env_lat = temp_data$Lat, env_time = list(year = temp_data$year, month =     temp_data$month), bio_lon = balanoides$decimalLongitude[i], bio_lat = balanoides$decimalLatitude[i], bio_time = list(year = balanoides$year[i], month = balanoides$month[i]), max_dist = 100000, env_variable = temp_data$tC)
-  print(balanoides_temp[i])
 }
 
 mydf <- data.frame(temp = c(stellatus_temp, balanoides_temp), 
