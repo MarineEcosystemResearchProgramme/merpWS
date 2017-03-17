@@ -53,43 +53,124 @@ help them improve their offer.
 CEFAS has recently made its API available. It allows exploring
 and downloading some the data described in its new Data Hub.
 
-```{r, echo = TRUE, eval = TRUE, cache = TRUE, message = FALSE}
+```{r, echo = TRUE, eval = TRUE, cache = TRUE, message = FALSE, warning=FALSE}
 # list all data files
 mydatasets <- get_cefas_datasets()
 
 # extract csv files (only downloadable format)
 mydownloads <- mydatasets$to_download
 mydata <- mydownloads[explore_cefas_data(mydownloads$Name, keyword = "SWT"), ]
-
+```
+```{r, echo = FALSE, eval = TRUE, cache = TRUE, message = FALSE, warning=FALSE}
 # get some coastal temperature data
-temp_data <- download_cefas_data(recordset_id = mydata$Id[1])
+# 6 is problematic, 9 takes for ever, given up on it for the moment. all the others have worked!!
+# save(res, file = "~/Desktop/all_cefas_temp.Rdata")
+load('~/Google Drive/not_to_share/my_backup/myDocuments/postdoc/MERP_postdoc/temperature_data/all_cefas_temp.Rdata')
+temp_data <- res[[1]]
+for(i in 2:length(res)){
+  if(!is.na(res[[i]])){
+    temp_data <- rbind(temp_data, res[[i]])
+  }
+}
+load('~/Google Drive/not_to_share/my_backup/myDocuments/github/emodnetMerpApp/data/uk_eez.Rdata')
+library(merpWS)
+library(robis)
+library(ggmap)
+library(mregions)
+library(rgeos)
+library(sp)
+library(merpData)
+library(magrittr)
 
+load(file = '~/Google Drive/not_to_share/my_backup/myDocuments/postdoc/MERP_postdoc/temperature_data/gibbula_temp.Rdata')
+load(file = '~/Google Drive/not_to_share/my_backup/myDocuments/postdoc/MERP_postdoc/temperature_data/stellatus_temp.Rdata')
+load(file = '~/Google Drive/not_to_share/my_backup/myDocuments/postdoc/MERP_postdoc/temperature_data/montagui_temp.Rdata')
+load(file = '~/Google Drive/not_to_share/my_backup/myDocuments/postdoc/MERP_postdoc/temperature_data/balanoides_temp.Rdata')
+# same with Chthamalus stellatus (southern) and semibalanus balanoides (northern)
+mydf <- data.frame(temp = c(stellatus_temp, balanoides_temp), 
+                   species = c(rep("stellatus", length(stellatus_temp)), rep("balanoides", length(balanoides_temp))))
+p <- ggplot(mydf) + geom_density(aes(temp, col = species)) + theme(legend.position = c(0.8, 0.9)) + xlab("Temperature")
+```
+
+CEFAS temperature data from different projects are available.
+They can be downloaded one by one and aggregated. Below is an 
+example for one of the data sets. 
+
+```{r, echo = TRUE, eval = FALSE, message = FALSE}
+temp_data <- download_cefas_data(recordset_id = mydata$Id[1])
+```
+
+We aggregate 10 CEFAS data sets together to obtain the
+data.frame temp_data. The Dates are reformatted to create
+year, month and day columns. 
+
+```{r, echo = TRUE, eval = TRUE, message = FALSE}
 # extract date in year, month and day from "Time"
 library(magrittr)
 inter <- strsplit(as.character(temp_data$Time), split = " ") %>%
   sapply(., function(x) x[[1]]) %>%
   strsplit(., split = "/") 
-temp_data$day <- sapply(inter, function(x) x[[1]])
-temp_data$month <- sapply(inter, function(x) x[[2]])
-temp_data$year <- sapply(inter, function(x) x[[3]])
+temp_data$day <- as.numeric(sapply(inter, function(x) x[[1]]))
+temp_data$month <- as.numeric(sapply(inter, function(x) x[[2]]))
+temp_data$year <- as.numeric(sapply(inter, function(x) x[[3]]))
 ```
 
-```{r figure, fig.width=7, fig.height=6, echo = TRUE, eval = TRUE, message = FALSE}
-# plot the data
+```{r figure, fig.width=7, fig.height=6, fig.align = 'center', echo = TRUE, eval = TRUE, message = FALSE, warning=FALSE}
+# plot temperature record locations. 
 library(ggplot2)
 library(ggmap)
-mymap <- get_map(location = c(lon = -2.5, lat = 53.5), zoom = 6)
-ggmap(mymap) + geom_point(aes(x = Long, y = Lat), data = temp_data)
+mymap <- get_map(location = c(lon = -2.5, lat = 53.5), zoom = 5, maptype = "satellite")
+ggmap(mymap) + geom_point(aes(x = Long, y = Lat), size = 0.5, data = temp_data)
 ```
 
-```{r, echo = TRUE, eval = TRUE, cache = TRUE, message = FALSE}
-# get some biotic data from obis
-# for a coastal species
+```{r, echo = TRUE, eval = FALSE, cache = FALSE, message = FALSE}
+# get some biotic data from obis for two species of barnacles with different thermal affinities: 
+# the southern species Balanus stellatus and the northern species Semibalanus balanoides. 
 library(robis)
 library(ggmap)
-records_gibbula <- plot_obis(scientificname = "Gibbula umbilicalis", area.x = c(-8.267, -8.267, 4.483, 4.483, -8.267), area.y = c(49.90, 56.45, 56.45, 49.90, 49.90), myresolution = 0.5, myzoom = 5, gridded = T)
-records_osilinus <- plot_obis("Osilinus lineatus", area.x = c(-8.267, -8.267, 4.483, 4.483, -8.267), area.y = c(49.90, 56.45, 56.45, 49.90, 49.90), myresolution = 0.5, myzoom = 5, gridded = T)
+library(mregions)
+library(rgeos)
+library(sp)
+library(merpData)
 
+uk_eez <- mr_shp("MarineRegions:eez", maxFeatures = NULL, filter = "United Kingdom Exclusive Economic Zone")
+uk_eez <- SpatialPolygonsDataFrame(gSimplify(uk_eez, tol = 0.01, topologyPreserve = TRUE), 
+data = uk_eez@data)
+
+stellatus <- plot_obis("Chthamalus stellatus", shapefile = uk_eez, myresolution = 0.5, 
+                     myzoom = 5, gridded = T)$obis_data
+stellatus <- format_obis_date(stellatus)
+stellatus <- stellatus[!is.na(stellatus$eventDate), ]
+
+balanoides <- plot_obis("Semibalanus balanoides", shapefile = uk_eez, myresolution = 0.5, 
+                     myzoom = 5, gridded = T)$obis_data
+balanoides <- format_obis_date(balanoides)
+balanoides <- balanoides[!is.na(balanoides$eventDate), ]
+
+```
+
+```{r, echo = TRUE, eval = FALSE, cache = FALSE, message = FALSE}
+# draw realized thermal niche by matching occurrences with CEFAS temperature data. This can be a slow process
+# that may take a few minutes depending on the size of both data sets to match.
+stellatus_temp <- rep(NA, nrow(stellatus))
+for(i in 1:length(stellatus_temp)) {
+  stellatus_temp[i] <- match_env(env_lon = temp_data$Long, env_lat = temp_data$Lat, env_time = list(year = temp_data$year, month =     temp_data$month), bio_lon = stellatus$decimalLongitude[i], bio_lat = stellatus$decimalLatitude[i], bio_time = list(year = stellatus$year[i], month = stellatus$month[i]), max_dist = 100000, env_variable = temp_data$tC)
+  print(stellatus_temp[i])
+}
+
+balanoides_temp <- rep(NA, nrow(balanoides))
+for(i in 1:length(balanoides_temp)) {
+  balanoides_temp[i] <- match_env(env_lon = temp_data$Long, env_lat = temp_data$Lat, env_time = list(year = temp_data$year, month =     temp_data$month), bio_lon = balanoides$decimalLongitude[i], bio_lat = balanoides$decimalLatitude[i], bio_time = list(year = balanoides$year[i], month = balanoides$month[i]), max_dist = 100000, env_variable = temp_data$tC)
+  print(balanoides_temp[i])
+}
+
+mydf <- data.frame(temp = c(stellatus_temp, balanoides_temp), 
+                   species = c(rep("stellatus", length(stellatus_temp)), rep("balanoides", length(balanoides_temp))))
+ggplot(mydf) + geom_density(aes(temp, col = species))
+```
+
+```{r, echo = FALSE, eval = TRUE, fig.width=6, fig.height=5, fig.align = 'center', cache = FALSE, message = FALSE}
+p
 ```
 
 ## Development
