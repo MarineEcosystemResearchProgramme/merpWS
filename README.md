@@ -5,11 +5,11 @@ merpWS
 
 ##### Functions to access marine data via Web Services
 
-An increasing number of marine data portals are making web services available. These allow, alongside traditional downloads from the browser, to access data programmaticely directly from scripting softwares such as Rstudio.
+An increasing number of marine data portals are making web services available. Alongside traditional downloads from the browser, these allow accessing data programmatically directly from scripting softwares such as Rstudio.
 
-The main advantages are two-folds: 1) the data fetched by R scripts are always up to date, a feature particularly useful when using data portals that are constantly added to; 2) fetching, formatting and cleaning steps can be done as part of a single seamless workflow.
+The main advantages are two-folds: 1) the data fetched by R scripts are always up to date, a feature particularly useful when using data portals that are regularly updated; 2) fetching, formatting and cleaning steps can be done as part of a single seamless workflow.
 
-merpWS is a collection of R functions making use of available marine web services to retrieve data from the main marine data portals.
+merpWS is a collection of R functions making use of available marine web services to retrieve data from the main marine data portals, including CEFAS, EMODNet and the PML Trait Explorer.
 
 Installation
 ------------
@@ -25,7 +25,7 @@ library(merpWS)
 Usage
 -----
 
-Below are possible workflows making use of merpWS functions. These workflows exemplify how data from different data sources can be combined to create "added data value". Typically we combine an observed variable with one or several explanatory ones, thereby mimicking . Note that web services are in most cases recent additions to data portals and bugs on their end are common. We are working in collaboration with data holding institutes to help them improve their offer.
+Below is a possible workflow making use of merpWS functions. It exemplifies how data from different data sources can be combined to create added value. Typically we combine an observed variable with one or several explanatory ones. Note that web services are in most cases recent additions to data portals and bugs are not uncommon. We are working in collaboration with data holding institutes to maintain merpWS.
 
 ### Cefas data
 
