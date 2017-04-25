@@ -38,8 +38,8 @@ Thumbs.db
 
 # myfiles #
 ######################
-/Users/Remi/Google Drive/not_to_share/my_backup/myDocuments/github/merpWS/README.Rmd
-/Users/Remi/Google Drive/not_to_share/my_backup/myDocuments/github/merpWS/.Rhistory
-/Users/Remi/Google Drive/not_to_share/my_backup/myDocuments/github/merpWS/.Rbuildignore
-/Users/Remi/Google Drive/not_to_share/my_backup/myDocuments/github/merpWS/.gitignore
-/Users/Remi/Google Drive/not_to_share/my_backup/myDocuments/github/merpWS/README_cache
+README.Rmd
+.Rhistory
+.Rbuildignore
+.gitignore
+README_cache
