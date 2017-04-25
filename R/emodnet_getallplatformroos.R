@@ -13,23 +13,23 @@
 
 emodnet_getallplatformroos <- function(roosid){
   myurl <- paste("http://www.emodnet-physics.eu/Map/service/WSEmodnet2.aspx?q=GetAllPlatformsRoos&RoosID=",roosid,"&Format=txt/xml", sep = "")
-  inter <- getURL(myurl)
-  inter1 <- gsub(pattern = "utf-16", replacement = "utf-8", x = inter, fixed = TRUE)# use exact matching
-  myxml <- xmlParse(inter1)# erroneous encoding!xmlParse always used the encoding provided by the document, which is wrong in this case. so we need to change
-  xmltop = xmlRoot(myxml)
+  temp <- getURL(myurl)
+  temp <- gsub(pattern = "utf-16", replacement = "utf-8", x = temp, fixed = TRUE)# use exact matching
+  myxml <- xmlParse(temp)# erroneous encoding!xmlParse always used the encoding provided by the document, which is wrong in this case. so we need to change
+  xmltop <- xmlRoot(myxml)
   size <- xmlSize(xmltop)
-  mynames <- unique(unlist(sapply(c(1:size),function(i)names(getChildrenStrings(xmltop[[i]])))))
+  mynames <- unique(unlist(sapply(c(1:size), function(i)names(getChildrenStrings(xmltop[[i]])))))
   
-  vres <- matrix(NA,ncol= length(mynames),nrow=size)
-  nbnames <- length (mynames)
+  res <- matrix(NA, ncol = length(mynames), nrow = size)
+  nbnames <- length(mynames)
   for (i in 1:size)
   {
     othernames <- names(getChildrenStrings(xmltop[[i]]))
-    idx <- match(othernames,mynames)
-    nbnames <- c(nbnames, length (othernames))
-    vres[i,c(idx)] <- getChildrenStrings(xmltop[[i]])
+    idx <- match(othernames, mynames)
+    nbnames <- c(nbnames, length(othernames))
+    res[i, c(idx)] <- getChildrenStrings(xmltop[[i]])
   }
-  vres1 <- as.data.frame(vres)
-  names(vres1) <- mynames
-  vres1
+  res <- as.data.frame(res)
+  names(res) <- mynames
+  res
 }
