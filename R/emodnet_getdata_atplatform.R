@@ -54,6 +54,14 @@ emodnet_getdata_atplatform <- function(platformid, paramcode){
     gsub(., pattern = ",", replacement = ".") %>%
     as.numeric(.)
   
+  mydates <- as.character(res$Date) %>%
+    strsplit(., split = " ", fixed = T) %>%
+    sapply(., function(x) strsplit(x[1], split = "/", fixed = T))
+  
+  res$year <- sapply(mydates, function(x) x[1])
+  res$month <- sapply(mydates, function(x) x[2])
+  res$day <- sapply(mydates, function(x) x[3])
+  
   # dealing with data quality
   res$data_quality <- rep(NA, nrow(res))
   res$data_quality[grep(res$ParamValue, pattern = paste(paramcode, "_QC=0", sep = ""))] <- "unknown"
