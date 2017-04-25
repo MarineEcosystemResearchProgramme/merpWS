@@ -30,19 +30,19 @@ emodnet_getdata_atplatform <- function(platformid, paramcode){
   myurl <- paste("http://www.emodnet-physics.eu/map/Service/WSEmodnet2.aspx?q=GetAllLatestDataCode&PlatformID=",
                  platformid, "&ParamCode=", paramcode, sep = "")
   temp <- getURL(myurl)
-  temp <- gsub(pattern = "utf-16", replacement = "utf-8", x = temp, fixed = TRUE)# use exact matching
+  temp <- gsub(pattern = "utf-16", replacement = "utf-8", x = temp, fixed = TRUE)
   myxml <- xmlParse(temp)
   xmltop <- xmlRoot(myxml)
   size <- xmlSize(xmltop)
-  mynames <- unique(c(unlist(sapply(c(1:size), function(i)names(getChildrenStrings(xmltop[[i]]))))))
+  mynames <- unique(c(unlist(sapply(c(1:size), function(i) names(getChildrenStrings(xmltop[[i]]))))))
   
   res <- matrix(NA, ncol = length(mynames), nrow = size)
-  nbnames <- length (mynames)
+  nbnames <- length(mynames)
   for (i in 1:size)
   {
     othernames <- names(getChildrenStrings(xmltop[[i]]))
     idx <- match(othernames, mynames)
-    nbnames <- c(nbnames, length (othernames))
+    nbnames <- c(nbnames, length(othernames))
     res[i, c(idx)] <- getChildrenStrings(xmltop[[i]])
   }
   res <- as.data.frame(res)
